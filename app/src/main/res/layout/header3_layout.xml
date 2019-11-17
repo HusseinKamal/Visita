@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="header"
+            type="int"/>
+    </data>
+
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:clickable="true"
+        android:id="@+id/lyHead"
+        android:weightSum="1"
+        android:gravity="center"
+        android:background="@color/colorPrimary"
+        android:layout_height="?actionBarSize">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight=".1"
+            android:tint="@color/white"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_arrow_back_left" />
+        <com.emergency.app.views.CustomTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTitle"
+            android:textSize="20sp"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="3"
+            android:layout_weight=".9"
+            android:layout_gravity="center"
+            android:gravity="start|center"
+            android:shadowDy="3"
+            android:shadowRadius="5"
+            android:text="User1"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+
+</layout>

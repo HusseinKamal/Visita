@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@drawable/shadow2_bg"
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    android:id="@+id/lyContainer">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:id="@+id/lyHead"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+        <ImageView android:layout_width="25dp"
+            android:layout_gravity="center"
+            android:layout_height="25dp"
+            android:id="@+id/ivClose"
+            android:clickable="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:background="?selectableItemBackground"
+            app:srcCompat="@drawable/ic_close"/>
+        <com.emergency.app.views.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:text="@string/filter"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+        <com.emergency.app.views.CustomEditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="start|center"
+            android:hint="@string/enter_name_search"
+            android:background="@drawable/input_style_bg"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:textColor="@color/gray_black"
+            android:layout_below="@id/lyHead"
+            android:id="@+id/edtName"
+            android:textSize="14sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/lyCategory"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:weightSum="1"
+            android:layout_below="@id/edtName"
+            android:orientation="horizontal">
+            <com.emergency.app.views.CustomTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="start|center"
+                android:text="@string/employee"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/gray_black"
+                android:layout_weight=".2"
+                android:textSize="14sp" />
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/rlSpinnerCategory"
+                android:background="@color/transparent_white"
+                android:layout_gravity="start"
+                android:layout_weight=".8"
+                android:gravity="start">
+                <ProgressBar
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/pbCategory"/>
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:theme="@style/SpinnerBG"
+                    android:spinnerMode="dropdown"
+                    android:popupBackground="@drawable/shadow_bg"
+                    android:overlapAnchor="false"
+                    android:id="@+id/spCategory"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/lyArea"
+            android:layout_below="@id/lyCategory"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:weightSum="1"
+            android:orientation="horizontal">
+                <com.emergency.app.views.CustomTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start|center"
+                    android:text="@string/area"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/gray_black"
+                    android:layout_weight=".2"
+                    android:textSize="14sp" />
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/rlSpinnerArea"
+                android:background="@color/transparent_white"
+                android:layout_gravity="start"
+                android:layout_weight=".8"
+                android:gravity="start">
+                <ProgressBar
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/pbLocation"/>
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:theme="@style/SpinnerBG"
+                    android:spinnerMode="dropdown"
+                    android:popupBackground="@drawable/shadow_bg"
+                    android:overlapAnchor="false"
+                    android:id="@+id/spLocation"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <com.emergency.app.views.CustomEditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="start|center"
+            android:hint="@string/max_price"
+            android:background="@drawable/input_style_bg"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:inputType="phone"
+            android:textColor="@color/gray_black"
+            android:layout_below="@id/lyArea"
+            android:id="@+id/edtPrice"
+            android:textSize="14sp" />
+
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:layout_below="@id/edtPrice"
+            android:layout_marginTop="25dp"
+            android:padding="10dp"
+            android:id="@+id/btnDone"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/ripple_bg_style"
+            android:layout_height="wrap_content">
+            <com.emergency.app.views.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/tvButtonTitle"
+                android:textSize="20sp"
+                android:shadowColor="@color/text_shadow"
+                android:shadowDx="3"
+                android:shadowDy="3"
+                android:lineHeight="13dp"
+                android:shadowRadius="5"
+                android:text="@string/done"
+                android:textColor="@color/white"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</ScrollView>
+</layout>

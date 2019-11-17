@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0098d1</color>
+    <color name="colorPrimaryDark">#1273a8</color>
+    <color name="colorAccent">#0098d1</color>
+    <color name="gray_bg">#FBFBFB</color>
+    <color name="orange_ripple">#d28e25</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="white">#ffffff</color>
+    <color name="white_light">#fafafa</color>
+    <color name="black">#000000</color>
+    <color name="orange">#FF8C00</color>
+    <color name="pink_lite">#FBE7C1</color>
+    <color name="orange_lite">#F5C165</color>
+    <color name="boldGray">#696969</color>
+    <color name="liteGray">#C3C3C3</color>
+    <color name="liteGray2">#e7e7e7</color>
+    <color name="liteGray3">#e9e9e9</color>
+    <color name="gray">#8c8885</color>
+    <color name="red_color">#FF0000</color>
+    <color name="red_lite">#EB1E00</color>
+    <color name="red_lite2">#EF5350</color>
+    <color name="blue" >#4A87EE</color>
+    <color name="blue_dark" >#1d70b8</color>
+    <color name="facebook_blue_color">#4267B2</color>
+    <color name="transparent_white">#00ffffff</color>
+    <color name="transparent_black">#00000000</color>
+    <color name="black_lite">#aa000000</color>
+    <color name="black_lite2">#88000000</color>
+    <color name="black_lite3">#66333333</color>
+    <color name="green">#58B845</color>
+    <color name="shadow_color">#0a000000</color>
+    <color name="gray_background">#E5E5E5</color>
+    <color name="gray_font">#707070</color>
+    <color name="gray_line">#CAC6C3</color>
+    <color name="white_bg_color">#F8F8F8</color>
+    <color name="gray_black">#333333</color>
+    <color name="text_shadow">#7F000000</color>
+    <color name="yellow_lite">#fec841</color>
+
+</resources>

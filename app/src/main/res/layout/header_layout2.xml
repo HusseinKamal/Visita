@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="header"
+            type="int"/>
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/lyHeader"
+        android:weightSum="1"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary"
+        android:layout_height="?actionBarSize">
+
+        <ImageView android:layout_width="24dp"
+            android:layout_gravity="center"
+            android:layout_height="match_parent"
+            android:id="@+id/ivBack"
+            android:tint="@color/white"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:clickable="true"
+            android:background="?selectableItemBackground"
+            app:srcCompat="@drawable/ic_arrow_back_left"/>
+        <com.emergency.app.views.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvMainTitle"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="center"
+            android:text="@string/add_request"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+</layout>

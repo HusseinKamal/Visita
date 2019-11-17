@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:background="@drawable/shadow2_bg"
+        android:orientation="vertical"
+        android:id="@+id/lyContainer">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:id="@+id/lyHead"
+                android:layout_alignParentTop="true"
+                android:background="@color/colorPrimary"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                <ImageView android:layout_width="25dp"
+                    android:layout_gravity="center"
+                    android:layout_height="25dp"
+                    android:id="@+id/ivClose"
+                    android:clickable="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:background="?selectableItemBackground"
+                    app:srcCompat="@drawable/ic_close"/>
+                <com.emergency.app.views.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_gravity="center"
+                    android:text="@string/alert"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+
+            <com.emergency.app.views.CustomTextView
+                android:id="@+id/tvMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:background="@color/white"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:padding="5dp"
+                android:gravity="start"
+                android:text="@string/start_request_message"
+                android:textColorHint="@color/liteGray"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+
+
+            <com.emergency.app.views.CustomAppButton
+                android:id="@+id/btnOk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/ripple_bg_style"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/ok"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>
