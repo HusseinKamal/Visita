@@ -177,6 +177,7 @@ public class RequestDetailsEmployeeActivity extends AppCompatActivity implements
                         bind.lyStatus.setBackground(AppConfigHelper.getBackground(this,AppConfigHelper.FINISH_STATUS));
                         bind.btnReport.setVisibility(View.GONE);
                         Toast.makeText(this,getResources().getString(R.string.request_finish_done),Toast.LENGTH_SHORT).show();
+                        status=AppConfigHelper.getStatus(this,AppConfigHelper.FINISH_STATUS);
                     }
                 }
                 catch (Exception e)
@@ -242,7 +243,7 @@ public class RequestDetailsEmployeeActivity extends AppCompatActivity implements
                                             new GPSHelper(RequestDetailsEmployeeActivity.this,RequestDetailsEmployeeActivity.this);
                                             bind.lyAccept.setVisibility(View.GONE);
                                             bind.btnReport.setVisibility(View.VISIBLE);
-                                            bind.btnReport.setText(getResources().getString(R.string.finish_order));
+                                            bind.btnReport.setText(getResources().getString(R.string.add_report));
                                             break;
                                         default:
                                             //rejected or finish
@@ -347,8 +348,10 @@ public class RequestDetailsEmployeeActivity extends AppCompatActivity implements
     public void getLocation(Location location) {
         try {
            //update location for employee
-            DatabaseReference mData = FirebaseDatabase.getInstance().getReference().child(AppConfigHelper.EMPLOYEE_CHILD).child(AppConfigHelper.PROFILE_CHILD).child(String.valueOf(employeeID)).child(AppConfigHelper.LOCATION_FIELD);
-            mData.setValue(location.getLatitude() +","+ location.getLatitude());
+            if(!status.equals(AppConfigHelper.getStatus(this,AppConfigHelper.FINISH_STATUS))) {
+                DatabaseReference mData = FirebaseDatabase.getInstance().getReference().child(AppConfigHelper.EMPLOYEE_CHILD).child(AppConfigHelper.PROFILE_CHILD).child(String.valueOf(employeeID)).child(AppConfigHelper.LOCATION_FIELD);
+                mData.setValue(location.getLatitude() + "," + location.getLatitude());
+            }
         }
         catch (Exception e)
         {

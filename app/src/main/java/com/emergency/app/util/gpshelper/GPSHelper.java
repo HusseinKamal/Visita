@@ -73,7 +73,7 @@ public class GPSHelper  extends Activity implements GoogleApiClient.ConnectionCa
     public void onLocationChanged(Location location) {
       mylocationData=location;
       listenerEvent.getLocation(location);
-      googleApiClient.disconnect();
+      //googleApiClient.disconnect();
     }
 
     @Override
@@ -126,7 +126,7 @@ public class GPSHelper  extends Activity implements GoogleApiClient.ConnectionCa
                                         mylocationData = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
                                         if(mylocationData!=null) {
                                             listenerEvent.getLocation(mylocationData);
-                                            googleApiClient.disconnect();
+                                            //googleApiClient.disconnect();
                                         }
                                         else
                                         {

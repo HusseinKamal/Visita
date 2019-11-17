@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
+import com.crashlytics.android.Crashlytics;
 import com.emergency.app.R;
 import com.emergency.app.databinding.ActivitySplashBinding;
 import com.emergency.app.models.User;
@@ -23,6 +24,7 @@ import com.emergency.app.util.appconfighelper.ValidateData;
 import com.emergency.app.util.languagehelper.LanguageHelper;
 import com.emergency.app.util.sharedprefrencehelper.SharedPrefHelper;
 
+import io.fabric.sdk.android.Fabric;
 import java.util.Locale;
 
 public class SplashActivity extends AppCompatActivity {
@@ -32,6 +34,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         new LanguageHelper().initLanguage(this,true);
         AppConfigHelper.makeFullScreen(this);
         bind= DataBindingUtil.setContentView(this,R.layout.activity_splash);

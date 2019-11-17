@@ -11,8 +11,8 @@
     android:gravity="center"
     tools:context="com.emergency.app.ui.SplashActivity">
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:id="@+id/ivLogo"
         android:src="@drawable/logo"/>
     <com.emergency.app.views.CustomTextViewBold

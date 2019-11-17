@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.emergency.app.R;
 import com.emergency.app.databinding.ActivityHomeEmployeeBinding;
@@ -22,17 +23,29 @@ import com.emergency.app.fragments.AboutFragment;
 import com.emergency.app.fragments.MoreFragment;
 import com.emergency.app.fragments.emploee.ProfileEmployeeFragment;
 import com.emergency.app.fragments.emploee.HomeEmployeeFragment;
+import com.emergency.app.models.User;
 import com.emergency.app.ui.guest.SearchActivity;
 import com.emergency.app.util.appconfighelper.AppConfigHelper;
+import com.emergency.app.util.appconfighelper.ValidateData;
+import com.emergency.app.util.dialogshelper.CustomProgress;
 import com.emergency.app.util.gpshelper.GPSHelper;
 import com.emergency.app.util.languagehelper.LanguageHelper;
+import com.emergency.app.util.sharedprefrencehelper.SharedPrefHelper;
 import com.emergency.app.viewmodel.HomeViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class HomeEmployeeActivity extends AppCompatActivity implements View.OnClickListener, GPSHelper.OnLocationListenerEvent {
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
     private HomeViewModel model;
+    private boolean isOpenGPs,isGetData;
+    private User user;
     ActivityHomeEmployeeBinding bind;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
@@ -53,15 +66,15 @@ public class HomeEmployeeActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new LanguageHelper().initLanguage(this,true);
-        bind= DataBindingUtil.setContentView(this,R.layout.activity_home_employee);
+        new LanguageHelper().initLanguage(this, true);
+        bind = DataBindingUtil.setContentView(this, R.layout.activity_home_employee);
         bind.executePendingBindings();
         initViews();
     }
-    private void initViews()
-    {
+
+    private void initViews() {
         try {
-            fragmentManager=getSupportFragmentManager();
+            fragmentManager = getSupportFragmentManager();
             bind.navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
             updateFragmentContainer(AppConfigHelper.HOME_ID);
             bind.lyHeaderContainer.ivSearch.setVisibility(View.GONE);
@@ -71,8 +84,7 @@ public class HomeEmployeeActivity extends AppCompatActivity implements View.OnCl
             model = ViewModelProviders.of(this).get(HomeViewModel.class);
             model.getData().observe(this, data -> {
                 try {
-                    switch (data)
-                    {
+                    switch (data) {
                         case AppConfigHelper.HOME_ID:
                             bind.navView.setSelectedItemId(R.id.navigation_home);
                             break;
@@ -86,18 +98,19 @@ public class HomeEmployeeActivity extends AppCompatActivity implements View.OnCl
                             updateFragmentContainer(AppConfigHelper.ABOUT_ID);
                             break;
                     }
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
-        }
-        catch (Exception e)
-        {
+            //get user data
+            user=(User) SharedPrefHelper.getSharedOBJECT(this,SharedPrefHelper.SHARED_PREFERENCE_USER_DATA);
+            //check if user has started request to update location
+            getRequestsDetails();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @SuppressLint("ResourceAsColor")
     private void updateFragmentContainer(int fragID) {
         try {
@@ -142,14 +155,11 @@ public class HomeEmployeeActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.ivSearch:
                 try {
-                    AppConfigHelper.gotoActivity(this, SearchActivity.class,false);
-                }
-                catch (Exception e)
-                {
+                    AppConfigHelper.gotoActivity(this, SearchActivity.class, false);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
@@ -159,24 +169,12 @@ public class HomeEmployeeActivity extends AppCompatActivity implements View.OnCl
                     int permissionLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
                     if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
                         //get Current Location
-                        new GPSHelper(this,this);
-                    }
-                    else {
-                        /*FragmentTransaction objFragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        Fragment prevFragment = getSupportFragmentManager().findFragmentByTag(AppConfigHelper.FILTER_DIALOG_TAG);
-                        if (prevFragment != null) {
-                            objFragmentTransaction.remove(prevFragment);
-                        }
-                        FilterDialog dialog = FilterDialog.newInstance(filter -> {
-                            //make filter in items activity
-                        });
-                        dialog.show(objFragmentTransaction, AppConfigHelper.FILTER_DIALOG_TAG);*/
+                        new GPSHelper(this, this);
+                    } else {
                         MediaBottomSheetDialog bottomSheetDialog = new MediaBottomSheetDialog();
-                        bottomSheetDialog.show(this.getSupportFragmentManager(),AppConfigHelper.FILTER_DIALOG_TAG);
+                        bottomSheetDialog.show(this.getSupportFragmentManager(), AppConfigHelper.FILTER_DIALOG_TAG);
                     }
-                }
-                catch (Exception objExcption)
-                {
+                } catch (Exception objExcption) {
                     objExcption.printStackTrace();
                 }
                 break;
@@ -189,28 +187,56 @@ public class HomeEmployeeActivity extends AppCompatActivity implements View.OnCl
         try {
             int permissionLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
-                //show Filter Dialog
-               /* FragmentTransaction objFragmentTransaction = getSupportFragmentManager().beginTransaction();
-                Fragment prevFragment = getSupportFragmentManager().findFragmentByTag(AppConfigHelper.FILTER_DIALOG_TAG);
-                if (prevFragment != null) {
-                    objFragmentTransaction.remove(prevFragment);
-                }
-                FilterDialog dialog = FilterDialog.newInstance(filter -> {
-                    //make filter in items activity
-                });
-                dialog.show(objFragmentTransaction, AppConfigHelper.FILTER_DIALOG_TAG);*/
                 MediaBottomSheetDialog bottomSheetDialog = new MediaBottomSheetDialog();
-                bottomSheetDialog.show(this.getSupportFragmentManager(),AppConfigHelper.FILTER_DIALOG_TAG);
+                bottomSheetDialog.show(this.getSupportFragmentManager(), AppConfigHelper.FILTER_DIALOG_TAG);
             }
-        }
-        catch (Exception e)
-        {
+            if(isOpenGPs) {
+                if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+                    new GPSHelper(this, this);
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void getLocation(Location location) {
-
+        try {
+            //update location for employee
+            DatabaseReference mData = FirebaseDatabase.getInstance().getReference().child(AppConfigHelper.EMPLOYEE_CHILD).child(AppConfigHelper.PROFILE_CHILD).child(String.valueOf(user.getId())).child(AppConfigHelper.LOCATION_FIELD);
+            mData.setValue(location.getLatitude() + "," + location.getLatitude());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //update location for employee to enable tracking
+    private void getRequestsDetails() {
+        try {
+            isGetData=true;//stop getting data after enable gps
+            DatabaseReference mdata = FirebaseDatabase.getInstance().getReference().child(AppConfigHelper.REQUEST_CHILD);
+            mdata.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(isGetData) {
+                        for (DataSnapshot uniqueKeySnapshot : dataSnapshot.getChildren()) {
+                            if (String.valueOf(uniqueKeySnapshot.child(AppConfigHelper.STATUS_REQUEST_FIELD).getValue()).equals(AppConfigHelper.START_STATUS)) {
+                                new GPSHelper(HomeEmployeeActivity.this, HomeEmployeeActivity.this);
+                                isOpenGPs = true;
+                            }
+                        }
+                        isGetData=false;
+                        mdata.removeEventListener(this);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
