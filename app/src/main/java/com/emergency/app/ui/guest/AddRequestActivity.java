@@ -33,7 +33,7 @@ public class AddRequestActivity extends AppCompatActivity implements View.OnClic
     ActivityAddRequestBinding bind;
     private Calendar objCalendar;
     private int year, month, day,guestID,employeeID,reviews,orders;
-    private String date,time,employeeName,guestName,employeeJob,rate,employeePhoto,guestPhoto,employeeMobile,price;
+    private String date,time,employeeName,guestName,employeeJob,rate,employeePhoto,guestPhoto,employeeMobile,price,deviceToken;
     private CustomArrayAdapter adapterAddress;
     private ArrayList<String> addressList=new ArrayList<>();
     private DatabaseReference mdata;
@@ -64,7 +64,6 @@ public class AddRequestActivity extends AppCompatActivity implements View.OnClic
             {
                 bind.card.getLayoutParams().height = (int) (AppConfigHelper.screenDimensions(this).y * .3);
             }
-            bind.profileImage.setImageResource(R.drawable.ic_girl);
             bind.lyHeaderContainer.tvMainTitle.setText(getResources().getString(R.string.add_request));
             //radio button change action listeners
             bind.rbMale.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -251,6 +250,7 @@ public class AddRequestActivity extends AppCompatActivity implements View.OnClic
                             employeePhoto = String.valueOf(uniqueKeySnapshot.child(AppConfigHelper.PHOTO_FIELD).getValue());
                             employeeMobile=String.valueOf(uniqueKeySnapshot.child(AppConfigHelper.MOBILE_FIELD).getValue());
                             String employeeType = String.valueOf(uniqueKeySnapshot.child(AppConfigHelper.TYPE_FIELD).getValue());
+                            deviceToken=String.valueOf(uniqueKeySnapshot.child(AppConfigHelper.DEVICE_TOKEN_FIELD).getValue());
                             bind.tvName.setText(employeeName);
                             bind.tvJob.setText(employeeJob);
                             bind.tvOrders.setText(orders+" "+getResources().getString(R.string.order));
@@ -332,6 +332,7 @@ public class AddRequestActivity extends AppCompatActivity implements View.OnClic
                         requestMap.put(AppConfigHelper.IS_REVIEW_FIELD,false);//if user made a review and rate for order or not then default is false
                         mdata1.setValue(requestMap);
                         isSendRequest=false;
+                        sendNotification(id);//send push notification to employee
                         Toast.makeText(AddRequestActivity.this, getResources().getString(R.string.request_done), Toast.LENGTH_SHORT).show();
                         CustomProgress.hideProgress();
                     }
@@ -347,6 +348,24 @@ public class AddRequestActivity extends AppCompatActivity implements View.OnClic
         catch (Exception e)
         {
             CustomProgress.hideProgress();
+            e.printStackTrace();
+        }
+    }
+    private void sendNotification(int requestId)
+    {
+        try {
+            HashMap<String,String> map= new HashMap<>();
+            map.put(AppConfigHelper.ID_REQUEST_FIELD,String.valueOf(requestId));
+            map.put(AppConfigHelper.EMP_NAME_FIELD,employeeName);
+            map.put(AppConfigHelper.GUEST_NAME_FIELD,guestName);
+            map.put(AppConfigHelper.STATUS_REQUEST_FIELD,AppConfigHelper.WAITING_STATUS);
+            map.put(AppConfigHelper.DEVICE_TOKEN_FIELD,deviceToken);
+            map.put(AppConfigHelper.REQUEST_TYPE_FIELD,employeeJob+" "+getResources().getString(R.string.request));
+            map.put(AppConfigHelper.IS_GUEST_FIELD,AppConfigHelper.GUEST);
+            AppConfigHelper.sendPushToSingleInstance(this,map);
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }

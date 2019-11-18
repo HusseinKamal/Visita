@@ -1,12 +1,10 @@
 package com.emergency.app.ui.guest;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-
 import com.emergency.app.fragments.guest.OrderGuestFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.emergency.app.R;
@@ -20,7 +18,6 @@ import com.emergency.app.util.appconfighelper.AppConfigHelper;
 import com.emergency.app.util.gpshelper.GPSHelper;
 import com.emergency.app.util.languagehelper.LanguageHelper;
 import com.emergency.app.viewmodel.HomeViewModel;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -29,7 +26,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
-
 import android.view.View;
 
 public class HomeGuestActivity extends AppCompatActivity implements View.OnClickListener,GPSHelper.OnLocationListenerEvent {

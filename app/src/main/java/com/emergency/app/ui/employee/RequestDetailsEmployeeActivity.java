@@ -23,11 +23,13 @@ import com.emergency.app.R;
 import com.emergency.app.databinding.ActivityRequestDetailsEmployeeBinding;
 import com.emergency.app.dialogs.MessageDialog;
 import com.emergency.app.dialogs.ReportDialog;
+import com.emergency.app.models.User;
 import com.emergency.app.util.appconfighelper.AppConfigHelper;
 import com.emergency.app.util.appconfighelper.ValidateData;
 import com.emergency.app.util.dialogshelper.CustomProgress;
 import com.emergency.app.util.gpshelper.GPSHelper;
 import com.emergency.app.util.languagehelper.LanguageHelper;
+import com.emergency.app.util.sharedprefrencehelper.SharedPrefHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,11 +37,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+
 public class RequestDetailsEmployeeActivity extends AppCompatActivity implements View.OnClickListener,GPSHelper.OnLocationListenerEvent{
     ActivityRequestDetailsEmployeeBinding bind;
     private int requestID,guestID,employeeID,reviews;
     private DatabaseReference mdata;
-    private String status,address,desc,guestType,requestType,report, dataTime,price,mobile,employeeJob,empployeeName,guestName,empployeePhoto,guestPhoto,rate;
+    private String status,address,desc,guestType,requestType,report, dataTime,price,mobile,employeeJob,empployeeName,guestName,empployeePhoto,guestPhoto,rate,deviceToken;
     boolean isSendFeedback=false,isReview=false,isGetData=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +125,7 @@ public class RequestDetailsEmployeeActivity extends AppCompatActivity implements
                     bind.lyAccept.setVisibility(View.GONE);
                     bind.btnReport.setVisibility(View.VISIBLE);
                     showAlertMessage(getResources().getString(R.string.start_request_message));
+                    sendNotification(requestID,AppConfigHelper.ACCEPT_STATUS);//accept notification
                 }
                 catch (Exception e)
                 {
@@ -135,6 +140,7 @@ public class RequestDetailsEmployeeActivity extends AppCompatActivity implements
                     bind.lyAccept.setVisibility(View.GONE);
                     bind.tvStatus.setText(AppConfigHelper.getStatus(this,AppConfigHelper.REJECT_STATUS));
                     bind.lyStatus.setBackground(AppConfigHelper.getBackground(this,AppConfigHelper.REJECT_STATUS));
+                    sendNotification(requestID,AppConfigHelper.REJECT_STATUS);//reject notification
                 }
                 catch (Exception e)
                 {
@@ -151,6 +157,7 @@ public class RequestDetailsEmployeeActivity extends AppCompatActivity implements
                         bind.lyStatus.setBackground(AppConfigHelper.getBackground(this,AppConfigHelper.START_STATUS));
                         new GPSHelper(this,this);
                         bind.btnReport.setText(getResources().getString(R.string.add_report));
+                        sendNotification(requestID,AppConfigHelper.START_STATUS);//start notification
                     }
                     //add report
                     else if(bind.btnReport.getText().toString().equals(getResources().getString(R.string.add_report))) {
@@ -178,6 +185,13 @@ public class RequestDetailsEmployeeActivity extends AppCompatActivity implements
                         bind.btnReport.setVisibility(View.GONE);
                         Toast.makeText(this,getResources().getString(R.string.request_finish_done),Toast.LENGTH_SHORT).show();
                         status=AppConfigHelper.getStatus(this,AppConfigHelper.FINISH_STATUS);
+                        //update number of orders
+                        User user=(User) SharedPrefHelper.getSharedOBJECT(this,SharedPrefHelper.SHARED_PREFERENCE_USER_DATA);
+                        DatabaseReference mDataOrders = FirebaseDatabase.getInstance().getReference().child(AppConfigHelper.EMPLOYEE_CHILD).child(AppConfigHelper.PROFILE_CHILD).child(String.valueOf(employeeID)).child(AppConfigHelper.ORDER_FIELD);
+                        mDataOrders.setValue(user.getOrders()+1);
+                        user.setOrders(user.getOrders()+1);
+                        SharedPrefHelper.setSharedOBJECT(this,SharedPrefHelper.SHARED_PREFERENCE_USER_DATA,user);//re save user data in shared preference
+                        sendNotification(requestID,AppConfigHelper.FINISH_STATUS);//finish notification
                     }
                 }
                 catch (Exception e)
@@ -312,6 +326,7 @@ public class RequestDetailsEmployeeActivity extends AppCompatActivity implements
                     for (DataSnapshot uniqueKeySnapshot : dataSnapshot.getChildren()) {
                         if (Integer.parseInt(String.valueOf(uniqueKeySnapshot.child(AppConfigHelper.ID_FIELD).getValue()))==guestID) {
                             mobile = String.valueOf(uniqueKeySnapshot.child(AppConfigHelper.MOBILE_FIELD).getValue());
+                            deviceToken = String.valueOf(uniqueKeySnapshot.child(AppConfigHelper.DEVICE_TOKEN_FIELD).getValue());
                             bind.tvPhone.setText(mobile);
                             mData.removeEventListener(this);
                         }
@@ -369,6 +384,24 @@ public class RequestDetailsEmployeeActivity extends AppCompatActivity implements
         catch (Exception ex)
         {
             ex.printStackTrace();
+        }
+    }
+    private void sendNotification(int requestId,String status)
+    {
+        try {
+            HashMap<String,String> map= new HashMap<>();
+            map.put(AppConfigHelper.ID_REQUEST_FIELD,String.valueOf(requestId));
+            map.put(AppConfigHelper.EMP_NAME_FIELD,empployeeName);
+            map.put(AppConfigHelper.GUEST_NAME_FIELD,guestName);
+            map.put(AppConfigHelper.STATUS_REQUEST_FIELD,status);
+            map.put(AppConfigHelper.DEVICE_TOKEN_FIELD,deviceToken);
+            map.put(AppConfigHelper.REQUEST_TYPE_FIELD,employeeJob+" "+getResources().getString(R.string.request));
+            map.put(AppConfigHelper.IS_GUEST_FIELD,AppConfigHelper.EMPLOYEE);
+            AppConfigHelper.sendPushToSingleInstance(this,map);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 

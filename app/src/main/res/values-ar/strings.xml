@@ -37,6 +37,7 @@
     <string name="report">التقرير</string>
     <string name="alert">تنبيه</string>
     <string name="order">الطلبات</string>
+    <string name="order_title">الطلب</string>
     <string name="about_us">معلومات عنا</string>
     <string name="contact_us">الإتصال بنا</string>
     <string name="email_us">المراسلة</string>
@@ -148,7 +149,7 @@
     <string name="enter_message">أكتب رسالتك(أختيارى)</string>
     <string name="employee_trac_failed">لا يوجد مسار لتبعه حى الآن</string>
     <string name="request_finish_done">تم الإنتهاء من الطلب :)</string>
-
+    <string name="sent_request_msg">أرسل لك طلب</string>
 
     <string-array name="job_type">
         <item>تمريض</item>

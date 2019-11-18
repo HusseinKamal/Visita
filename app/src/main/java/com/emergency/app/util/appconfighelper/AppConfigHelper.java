@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
@@ -32,16 +33,31 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.emergency.app.R;
 import com.emergency.app.util.sharedprefrencehelper.SharedPrefHelper;
+
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class AppConfigHelper {
     public static final String ARABIC_LANGUAGE = "ar";
     public static final String ENGLISH_LANGUAGE = "en";
+
+    public static final String MESSAAGE_NOTIFY_CODE = "1";
+    public static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+    public static final String APP_SERVER_KEY = "AAAAp8I0dH0:APA91bH-7XEgoz9hYHgsw4GAKAa0RgMEIAUOtQ3Tk0ZsNpfVag_hI836Z5ggTJB-EvHLFFz-sGQWBk131jT6KFV1PPzu3N08_v_bTqm5CraBMJUYG2oJdZrPw-pBbty4hTEBHPpxvldh";
 
     public static final String GUEST_CHILD = "Guest";
     public static final String EMPLOYEE_CHILD = "Employee";
@@ -124,6 +140,10 @@ public class AppConfigHelper {
     public static final String REJECT_STATUS ="Rejected";
     public static final String START_STATUS ="Started";
     public static final String FINISH_STATUS ="Finished";
+
+    public static final String IS_GUEST_FIELD ="isGuest";
+    public static final String GUEST ="guest";
+    public static final String EMPLOYEE ="employee";
 
     //Dialogs
     public static final String FILTER_DIALOG_TAG="filterDialogTAG";
@@ -735,7 +755,7 @@ public class AppConfigHelper {
             return null;
         }
     }
-    public static void setDrawabaleEditText(Activity activity, EditText customEditText, int drawableResource) {
+  /*  public static void setDrawabaleEditText(Activity activity, EditText customEditText, int drawableResource) {
         try {
            if(SharedPrefHelper.getSharedString(activity,SharedPrefHelper.SHARED_PREFERENCE_LANGUAGE_KEY).equals(AppConfigHelper.ARABIC_LANGUAGE))
            {
@@ -750,7 +770,7 @@ public class AppConfigHelper {
         {
             e.printStackTrace();
         }
-    }
+    }*/
     public static void setOffetsSpinner(Spinner spinner)
     {
         try {
@@ -763,6 +783,44 @@ public class AppConfigHelper {
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+    public static void sendPushToSingleInstance(final Context activity, final HashMap dataValue) {
+        try {
+            //final String url = "https://fcm.googleapis.com/fcm/send";
+            StringRequest myReq = new StringRequest(Request.Method.POST, AppConfigHelper.FCM_MESSAGE_URL,
+                    response -> {
+                        //Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show();
+                    },
+                    error -> {
+                        // Toast.makeText(activity, "Oops error", Toast.LENGTH_SHORT).show();
+                    }) {
+
+                @Override
+                public byte[] getBody() {
+                    Map<String, Object> rawParameters = new Hashtable();
+                    rawParameters.put("data", new JSONObject(dataValue));
+                    rawParameters.put("to", dataValue.get(AppConfigHelper.DEVICE_TOKEN_FIELD));
+                    return new JSONObject(rawParameters).toString().getBytes();
+                }
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "key=" + AppConfigHelper.APP_SERVER_KEY);
+                    return headers;
+                }
+
+            };
+
+            Volley.newRequestQueue(activity).add(myReq);
+        }
+        catch (Exception objException)
+        {
+            objException.printStackTrace();
         }
     }
 
